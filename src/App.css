@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  /* text-align: center; */
 }
 
 .App-logo {
@@ -18,8 +18,8 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  /* align-items: center; */
+  /* justify-content: center; */
   font-size: calc(10px + 2vmin);
   color: white;
 }
@@ -35,4 +35,33 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+table.table-recog {
+  width: 100%;
+  border: 1px solid #444;
+  border-spacing: 0;
+}
+/* table.table-recog tr,
+table.table-recog th {
+  border-bottom: 1px solid #444;
+} */
+/* table.table-recog tr {
+  display: flex;
+}
+table.table-recog td {
+  flex-basis: 0%;
+  width: 0;
+} */
+table.table-recog td,
+table.table-recog th {
+  border-right: 1px solid #444;
+  border-bottom: 1px solid #444;
+  padding: 5px;
+}
+table.table-recog tr td:last-child {
+  border-right: 1;
+}
+table.table-recog tr:last-child td {
+  border-bottom: 0;
 }

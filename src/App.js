@@ -1,23 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
-
+import "./App.css";
+import FeatureBox from "./detector-subpages-container";
+import data from "./ApiIp";
 function App() {
+  // Switch different ApiIP: general, qrcode, tables, screen
+  let url_post = data.general.url;
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <FeatureBox url_post={url_post} />
     </div>
   );
 }
