@@ -1,6 +1,0 @@
-{
-  "general": { "url": "https://ocrsrv.encoo.com:9001/general/process" },
-  "qrcode": { "url": "https://ocr.encoo.com:9011/recog" },
-  "tables": { "url": "https://table.ocr.encoo.com:9022/general/table_recog" },
-  "screen": { "url": "https://screen.ocr.encoo.com:9021/general/process" }
-}
