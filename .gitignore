@@ -10,6 +10,7 @@
 
 # production
 /build
+ApiIp.json
 
 # misc
 .DS_Store
