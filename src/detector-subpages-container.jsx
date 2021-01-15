@@ -1,12 +1,14 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import React, { Component } from "react";
-import { Col } from "reactstrap";
+import { Col, Row } from "reactstrap";
 import UploadBox from "./IOTools/uploadbox";
 import OutputBox from "./IOTools/outputbox";
 import OutputBoxForTable from "./IOTools/outputboxForTable";
-import { Row } from "antd";
-import { jsx, css } from "@emotion/react";
+import HoverText from "./IOTools/hoverText";
+// import { Row } from "antd";
+import { jsx } from "@emotion/react";
+import { css } from "@emotion/react";
 
 class FeatureBox extends Component {
   // callback data got after uploaded
@@ -16,9 +18,12 @@ class FeatureBox extends Component {
       dataForOutput: [],
       url_post: props.url_post,
       imgSource: null,
+      selectedId: null,
+      hover: false,
     };
   }
-  handleData = (data) => {
+
+  callback = (data) => {
     if (data.detectors) {
       this.setState({
         dataForOutput: data.detectors,
@@ -28,17 +33,19 @@ class FeatureBox extends Component {
       this.setState({ dataForOutput: data.infos });
     }
   };
+
+  callback_hover = (id, hover) => {
+    this.setState({
+      selectedId: id,
+      hover: hover,
+    });
+  };
+
   render() {
     return (
-      <React.Fragment
-        css={css`
-          // display: flex;
-          // flex-grow: 1;
-        `}
-      >
+      <React.Fragment>
         <Row
           css={css`
-            // flex: 1;
             display: flex;
             padding: 20px;
             flex-wrap: nowrap;
@@ -49,21 +56,15 @@ class FeatureBox extends Component {
               flex: 1;
             `}
           >
-            <div
-              css={css`
-                position: relative;
-              `}
-            >
-              <UploadBox
-                url_post={this.state.url_post}
-                handleData={this.handleData.bind(this)}
-              />
-            </div>
-            {/* {console.log("detectors", this.state.data)} */}
+            <UploadBox
+              url_post={this.state.url_post}
+              callback={this.callback.bind(this)}
+              callback_hover={this.callback_hover.bind(this)}
+            />
           </Col>
           <Col
             css={css`
-              flex: 2;
+              flex: 1;
               margin-left: 30px;
             `}
           >
@@ -78,9 +79,23 @@ class FeatureBox extends Component {
             </Row>
             {/* <OutputBox detectors={this.state.dataForOutput} /> */}
             {this.state.dataForOutput[0]?.hasOwnProperty("cells") ? (
-              <OutputBoxForTable detectors={this.state.dataForOutput} />
+              <div>
+                <HoverText
+                  infos={this.state.dataForOutput}
+                  selectedId={this.state.selectedId}
+                  hover={this.state.hover}
+                />
+                <OutputBoxForTable detectors={this.state.dataForOutput} />
+              </div>
             ) : (
-              <OutputBox detectors={this.state.dataForOutput} />
+              <div>
+                <HoverText
+                  detectors={this.state.dataForOutput}
+                  selectedId={this.state.selectedId}
+                  hover={this.state.hover}
+                />
+                <OutputBox detectors={this.state.dataForOutput} />
+              </div>
             )}
 
             {/* test only below */}

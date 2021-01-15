@@ -1,15 +1,16 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, css } from "@emotion/react";
-import "../App.css";
+import { jsx } from "@emotion/react";
+import { css } from "@emotion/react";
+import "../table-recog.css";
 
 const OutputBoxForTable = (props) => {
   let detectors = props.detectors;
-  console.log("origin data", detectors);
+  console.log("origin data, detectors", detectors);
   // console.log("data passed to outputbox", detectors);
   let results = [];
   for (let i = 0; i < detectors.length; i++) {
-    if (detectors[i].is_tabel) {
+    if (detectors[i].is_table) {
       results[i] = sortingTables(detectors[i]);
     } else {
       results[i] = sortingTitles(detectors[i]);
@@ -26,12 +27,12 @@ const sortingTitles = (titleInfo) => {
     result[idx] = (
       <div key={idx}>
         <span>{titleInfo.cells[key].text}</span>
+        {/* {console.log(titleInfo.cells[key].text)} */}
       </div>
     );
     idx++;
   }
   result[result.length] = <br />;
-  // console.log("sorted results for titles", result);
   return result;
 };
 
@@ -40,6 +41,7 @@ const get_start_row = (row) => {
   return row[0].start_row;
 };
 
+// mininum height of the row
 const get_min_span_row = (row) => {
   let min_span = 0;
   if (is_the_same_span(row)) {
@@ -58,6 +60,7 @@ const get_min_span_row = (row) => {
   return min_span;
 };
 
+// check if having irregular cell height by scanning all in this row
 const is_the_same_span = (row) => {
   let init_span = row[0].end_row - row[0].start_row;
   for (var i = 1; i < row.length; i++) {
@@ -79,13 +82,17 @@ const add_empty_tr = (empty_count, real_tr) => {
   return output_row;
 };
 
+const handleClick = (text) => {
+  console.log(`hit in the cell ${text}`);
+};
+
 const sortingTables = (tableInfo) => {
   // console.log("data extended", tableInfo);
   const allCells = tableInfo.cells;
   const rows = [];
   let next_row_index = 0;
   // iterate the rows then push into the array based on the row#
-  for (let i = 0; i < allCells.length; i++) {
+  for (let i = 0; i < tableInfo.rows; i++) {
     rows[i] = allCells.filter((item) => item.start_row === i);
   }
   // console.log("oriArr for the table", rows);
@@ -93,27 +100,24 @@ const sortingTables = (tableInfo) => {
   let filtered = rows.filter(function (e) {
     return e != "";
   });
-  console.log("cleanArray for the table", filtered);
+  // console.log("Array before filtered", rows);
+  // console.log("cleanArray for the table", filtered);
 
   return (
-    <div
-      css={css`
-        // overflow: scroll;
-        // overflow-y: hidden;
-      `}
-    >
-      <table class="table-recog">
+    <div>
+      <table className="table-recog">
         <tbody>
           {filtered.map((row, index) => {
             row.sort(function (a, b) {
               return a.start_column - b.start_column;
             });
+            // console.log("row", row);
             // console.log("start row:", get_start_row(row));
             // console.log("next row:", next_row_index);
             let empty_row_combine = [];
             if (get_start_row(row) !== next_row_index) {
               let empty_count = Math.abs(get_start_row(row) - next_row_index);
-              console.log("empty count", empty_count);
+              // console.log("empty count " + empty_count + " at row#" + index);
               let real_tr = (
                 <tr key={index}>
                   {row.map((cell, idx) => {
@@ -128,8 +132,8 @@ const sortingTables = (tableInfo) => {
                         rowSpan={len_row}
                         colSpan={len_col}
                         // style={{ flex: len_col }}
+                        onClick={() => handleClick(cell.text)}
                       >
-                        {/* {cell.text} */}
                         {text}
                       </td>
                     );
@@ -140,8 +144,8 @@ const sortingTables = (tableInfo) => {
               next_row_index = get_start_row(row) + get_min_span_row(row);
               return empty_row_combine;
             }
-            next_row_index = get_start_row(row) + get_min_span_row(row);
-            // console.log("nex_row_index:", next_row_index);
+            next_row_index = get_start_row(row) + 1;
+            // console.log("next row (done):", next_row_index);
             return (
               <tr key={index}>
                 {row.map((cell, idx) => {
@@ -156,8 +160,8 @@ const sortingTables = (tableInfo) => {
                       rowSpan={len_row}
                       colSpan={len_col}
                       // style={{ flex: len_col }}
+                      onClick={() => handleClick(cell.text)}
                     >
-                      {/* {cell.text} */}
                       {text}
                     </td>
                   );
